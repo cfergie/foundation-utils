@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(UIKit)
+import UIKit.UIImage
+#endif
 
 public extension URLSession {
     enum Error: Swift.Error {
@@ -27,4 +30,16 @@ public extension URLSession {
             }
         }
     }
+
+    #if canImport(UIKit)
+    func dataTask(
+        with url: URL,
+        completionHandler: @escaping (UIImage?) -> Void
+    ) -> URLSessionDataTask {
+        return dataTask(with: url) { (data, _, _) in
+            let image = data.map { UIImage(data: $0) } ?? nil
+            completionHandler(image)
+        }
+    }
+    #endif
 }
