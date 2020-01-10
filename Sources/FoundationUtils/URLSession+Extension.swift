@@ -12,8 +12,18 @@ public extension URLSession {
         with url: URL,
         completionHandler: @escaping (Result<T, Swift.Error>) -> Void
     ) -> URLSessionDataTask {
-        return dataTask(with: url) { (data, response, error) in
-            do {
+        return self.dataTask(
+            with: URLRequest(url: url),
+            completionHandler: completionHandler
+        )
+    }
+
+    func dataTask<T: Decodable>(
+        with urlRequest: URLRequest,
+        completionHandler: @escaping (Result<T, Swift.Error>) -> Void
+    ) -> URLSessionDataTask {
+        return dataTask(with: urlRequest) { (data, response, error) in
+            completionHandler(Result {
                 if let error = error {
                     throw error
                 }
@@ -22,12 +32,8 @@ public extension URLSession {
                     throw Error.noData
                 }
 
-                let decoded = try JSONDecoder().decode(T.self, from: data)
-
-                completionHandler(.success(decoded))
-            } catch let error {
-                completionHandler(.failure(error))
-            }
+                return try JSONDecoder().decode(T.self, from: data)
+            })
         }
     }
 
@@ -36,7 +42,14 @@ public extension URLSession {
         with url: URL,
         completionHandler: @escaping (UIImage?) -> Void
     ) -> URLSessionDataTask {
-        return dataTask(with: url) { (data, _, _) in
+        return dataTask(with: URLRequest(url: url), completionHandler: completionHandler)
+    }
+
+    func dataTask(
+        with urlRequest: URLRequest,
+        completionHandler: @escaping (UIImage?) -> Void
+    ) -> URLSessionDataTask {
+        return dataTask(with: urlRequest) { (data, _, _) in
             let image = data.map { UIImage(data: $0) } ?? nil
             completionHandler(image)
         }

@@ -1,3 +1,3 @@
-# foundation-utils
+# Foundation Utilities
 
-A description of this package.
+Utility library for Swift and Foundation framework
