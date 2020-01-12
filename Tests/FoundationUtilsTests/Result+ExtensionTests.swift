@@ -26,9 +26,28 @@ final class ResultExtensionTests: XCTestCase {
         }
     }
 
+
+    func testDefaultToValueReturnsValueIfSuccess() {
+        let result = Result<String, Error>.success("abc")
+
+        let defaultValue = result.default(to: "pqr")
+
+        XCTAssertEqual(defaultValue, "abc")
+    }
+
+    func testDefaultToValueReturnsDefaultValueIfFailure() {
+        let result = Result<String, Error>.failure(TestError())
+
+        let defaultValue = result.default(to: "pqr")
+
+        XCTAssertEqual(defaultValue, "pqr")
+    }
+
     static var allTests = [
         ("testMappingOverThrowingFunction", testMappingOverThrowingFunction),
         ("testMappingOverNonThrowingFunction", testMappingOverNonThrowingFunction),
+        ("testDefaultToValueReturnsValueIfSuccess", testDefaultToValueReturnsValueIfSuccess),
+        ("testDefaultToValueReturnsDefaultValueIfFailure", testDefaultToValueReturnsDefaultValueIfFailure),
     ]
 }
 

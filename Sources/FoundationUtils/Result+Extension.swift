@@ -10,4 +10,12 @@ public extension Result {
             return .failure(error)
         }
     }
+
+    func `default`(to defaultValue: Success) -> Success {
+        do {
+            return try self.get()
+        } catch {
+            return defaultValue
+        }
+    }
 }
